@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI-Assisted Pixel Drawing</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.12.0/dist/tf.min.js"></script>
+</head>
+<body>
+
+<h1>AI-Assisted Pixel Drawing</h1>
+
+<div class="controls">
+  <!-- Canvas & brush -->
+  <div class="row group">
+    <label>Canvas W: <input id="canvasWidth" type="number" min="50" max="1024" value="300" /></label>
+    <label>H: <input id="canvasHeight" type="number" min="50" max="1024" value="300" /></label>
+    <button id="resizeBtn">Resize</button>
+    <span id="modeIndicator">Mode: FAST 🟢</span>
+  </div>
+  <div class="row group">
+    <label>Brush size: <span id="pixelSizeLabel">12</span></label>
+    <input id="pixelSizeSlider" type="range" min="2" max="80" value="12" />
+    <label>Color: <input id="colorPicker" type="color" value="#000000" /></label>
+  </div>
+
+  <!-- CNN & AI -->
+  <div class="row group">
+    <label>CNN input:</label>
+    <select id="cnnSize">
+      <option value="28">28</option>
+      <option value="64" selected>64</option>
+      <option value="128">128</option>
+    </select>
+    <label>AI Mode:</label>
+    <select id="modelMode">
+      <option value="optimized" selected>Fast</option>
+      <option value="full">Accurate</option>
+    </select>
+    <label>Epochs:</label>
+    <input id="epochs" type="number" min="1" max="50" value="6" style="width:72px"/>
+    <label>Batch:</label>
+    <input id="batchSize" type="number" min="1" max="32" value="4" style="width:72px"/>
+  </div>
+
+  <!-- Buttons -->
+  <div class="row group">
+    <button id="submitBtn">Submit → Train</button>
+    <button id="clearBtn">Clear</button>
+    <input id="uploadImages" type="file" multiple accept="image/*" />
+    <button id="uploadTrainBtn">Upload & Train</button>
+    <button id="predictBtn">Predict</button>
+  </div>
+
+  <!-- Frequency blend & cache -->
+  <div class="row group small">
+    <label>Blend freq→CNN: <input id="blend" type="range" min="0" max="100" value="70" /></label>
+    <span class="small"> (<span id="blendVal">70</span> %)</span>
+    <button id="saveModelBtn">Save Model</button>
+    <input id="loadModelInput" type="file" accept=".json,.bin" />
+    <button id="downloadFreqBtn">Download Frequency JSON</button>
+    <button id="clearCacheBtn">Clear Cache</button>
+  </div>
+
+  <!-- Coordinate input -->
+  <div class="row group">
+    <label>X: <input id="coordX" type="number" min="0" value="0" style="width:60px"></label>
+    <label>Y: <input id="coordY" type="number" min="0" value="0" style="width:60px"></label>
+    <button id="drawCoordBtn">Draw Pixel</button>
+  </div>
+
+  <!-- Status & dataset info -->
+  <div class="row small">
+    <div>Dataset: <strong id="datasetCount">0</strong></div>
+    <div style="margin-left:12px">Trained: <strong id="trainedFlag">no</strong></div>
+    <div class="status" id="status">Ready</div>
+  </div>
+</div>
+
+<!-- Canvas display -->
+<div class="row" style="gap:16px;align-items:flex-start">
+  <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+    <div class="small">Draw (touch / mouse)</div>
+    <canvas id="drawCanvas" width="300" height="300"></canvas>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+    <div class="small">Predicted</div>
+    <canvas id="predictCanvas" width="300" height="300"></canvas>
+  </div>
+</div>
+
+<div class="footer">
+Tips: Fast mode for mobile, Accurate mode for high-quality AI-assisted drawing. All runs locally.
+</div>
+
+<script src="model.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
